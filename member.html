@@ -1,0 +1,277 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة العضو | SmartLib</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .dashboard-card {
+            background: rgba(22, 27, 34, 0.95);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            color: #fff;
+        }
+
+            .dashboard-card h3, .dashboard-card h1, .dashboard-card h4, .dashboard-card p, .dashboard-card label {
+                color: #fff;
+            }
+
+        .book-item {
+            background: rgba(13, 17, 23, 0.8);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #fff;
+        }
+
+        .book-cover {
+            width: 60px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-active {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .status-overdue {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .status-returned {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .nav-tabs .nav-link {
+            color: #94a3b8;
+            border: none;
+        }
+
+            .nav-tabs .nav-link.active {
+                background-color: #e94560;
+                color: white;
+                border-radius: 10px 10px 0 0;
+            }
+
+        #chatBoxMember {
+            background: rgba(13, 17, 23, 0.9);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            height: 350px;
+            overflow-y: auto;
+            color: #fff;
+        }
+
+        .msg-bubble {
+            padding: 10px 15px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            display: inline-block;
+            max-width: 80%;
+        }
+
+        .msg-admin {
+            background-color: #e94560;
+            color: white;
+            float: left;
+            clear: both;
+        }
+
+        .msg-member {
+            background-color: #334155;
+            color: #fff;
+            float: right;
+            clear: both;
+        }
+
+        #google_translate_element {
+            margin-top: 5px;
+        }
+
+        .goog-te-gadget-simple {
+            background: transparent !important;
+            border: none !important;
+        }
+
+        .goog-te-menu-value span {
+            color: white !important;
+        }
+    </style>
+</head>
+<body class="page-member">
+
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="/index.html"><i class="fas fa-book-open me-2"></i>SmartLib</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link text-white" href="/index.html">الرئيسية</a></li>
+                    <li class="nav-item ms-3"><div id="google_translate_element"></div></li>
+                    <li class="nav-item ms-3"><a class="nav-link text-danger fw-bold" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-1"></i>تسجيل خروج</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        <h1 class="text-center mb-4 text-white" style="font-family: 'Amiri', serif;">لوحة تحكم العضو 👤</h1>
+
+        <ul class="nav nav-tabs justify-content-center mb-4" id="myTab" role="tablist">
+            <li class="nav-item"><button class="nav-link active" id="loans-tab" data-bs-toggle="tab" data-bs-target="#loans">استعاراتي</button></li>
+            <li class="nav-item"><button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile">حسابي</button></li>
+            <li class="nav-item"><button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#messages">الرسائل</button></li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="loans">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="dashboard-card">
+                            <h3 class="mb-4"><i class="fas fa-book-reader me-2"></i>الكتب المستعارة</h3>
+                            <div id="loansContainer"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="dashboard-card text-center">
+                            <h3 class="mb-3">إحصائياتي</h3>
+                            <h1 class="display-4 fw-bold text-danger" id="totalLoans">0</h1>
+                            <p class="text-light">كتاب تم استعارته</p>
+                            <hr class="border-secondary">
+                            <h4 class="fw-bold text-warning" id="totalFines">0 ج.م</h4>
+                            <p class="text-light">غرامات مستحقة</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="profile">
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        <div class="dashboard-card">
+                            <h3 class="mb-4"><i class="fas fa-key me-2"></i>تغيير كلمة المرور</h3>
+                            <form id="changePasswordForm">
+                                <div class="mb-3">
+                                    <label class="form-label">كلمة المرور القديمة</label>
+                                    <input type="password" class="form-control bg-dark text-white border-secondary" id="oldPassword" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">كلمة المرور الجديدة</label>
+                                    <input type="password" class="form-control bg-dark text-white border-secondary" id="newPassword" required minlength="6">
+                                </div>
+                                <button type="submit" class="btn btn-danger w-100 fw-bold">تغيير</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="messages">
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="dashboard-card">
+                            <h3 class="mb-4"><i class="fas fa-envelope me-2"></i>مراسلة الإدارة</h3>
+                            <div id="chatBoxMember" class="mb-3"></div>
+                            <form id="sendMessageForm" class="d-flex gap-2">
+                                <input type="text" class="form-control bg-dark text-white border-secondary" id="messageContent" placeholder="اكتب رسالتك هنا..." required>
+                                <button type="submit" class="btn btn-danger px-4">إرسال</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+                function googleTranslateElementInit() {
+                    new google.translate.TranslateElement({pageLanguage: 'ar', includedLanguages: 'en,ar', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+                }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+                const loansApi = 'https://localhost:7172/api/loans';
+                const membersApi = 'https://localhost:7172/api/members';
+                const messagesApi = 'https://localhost:7172/api/messages';
+                let currentMemberId = 0;
+                let currentUserName = '';
+
+                document.addEventListener('DOMContentLoaded', () => {
+                    const user = JSON.parse(localStorage.getItem('currentUser'));
+                    if (!user || user.role === 'ADMIN') { alert('يجب تسجيل الدخول كعضو أولاً'); window.location.href = '/index.html'; return; }
+                    currentMemberId = user.id;
+                    currentUserName = user.name;
+                    loadMyLoans(user.id);
+                    loadMemberChat();
+                });
+
+                async function loadMyLoans(memberId) {
+                    const response = await fetch(`${loansApi}/my-loans/${memberId}`);
+                    const loans = await response.json();
+                    const container = document.getElementById('loansContainer');
+                    container.innerHTML = '';
+                    if (loans.length === 0) { container.innerHTML = '<p class="text-center text-light">لم تقم باستعارة أي كتب حتى الآن.</p>'; return; }
+                    let activeLoans = 0; let totalFines = 0;
+                    loans.forEach(loan => {
+                        let statusClass = 'status-active'; let statusText = 'مستعار'; let actionBtns = '';
+                        if (loan.returnDate) { statusClass = 'status-returned'; statusText = 'تم الإرجاع'; }
+                        else if (loan.daysLate > 0) { statusClass = 'status-overdue'; statusText = `متأخر (${loan.daysLate} يوم)`; totalFines += loan.daysLate * 5; activeLoans++; actionBtns = `<button class="btn btn-sm btn-success ms-2" onclick="returnBook(${loan.id})">إرجاع</button>`; }
+                        else { activeLoans++; actionBtns = `<button class="btn btn-sm btn-success ms-2" onclick="returnBook(${loan.id})">إرجاع</button>`; if (loan.renewCount < 2) { actionBtns += `<button class="btn btn-sm btn-outline-primary ms-1" onclick="renewLoan(${loan.id})">تمديد</button>`; } }
+                        const issueDate = new Date(loan.issueDate).toLocaleDateString('ar-EG'); const dueDate = new Date(loan.dueDate).toLocaleDateString('ar-EG');
+                        container.innerHTML += `<div class="book-item"><img src="${loan.bookCover || 'https://via.placeholder.com/60x80'}" class="book-cover"><div class="flex-grow-1"><h5 class="fw-bold mb-1 text-white">${loan.bookTitle}</h5><p class="mb-0 text-light" style="font-size: 14px;">استعارة: ${issueDate} | إرجاع: ${dueDate}</p></div><div class="d-flex align-items-center"><span class="status-badge ${statusClass}">${statusText}</span>${actionBtns}</div></div>`;
+                    });
+                    document.getElementById('totalLoans').innerText = activeLoans;
+                    document.getElementById('totalFines').innerText = totalFines + ' ج.م';
+                }
+
+                async function renewLoan(loanId) { if(!confirm('هل تريد تمديد الاستعارة 14 يوم إضافية؟')) return; const response = await fetch(`${loansApi}/renew/${loanId}`, { method: 'POST' }); if (response.ok) { alert('تم التمديد بنجاح!'); loadMyLoans(currentMemberId); } else { alert(await response.text()); } }
+                async function returnBook(loanId) { if(!confirm('هل أنت متأكد من إرجاع الكتاب؟')) return; const response = await fetch(`${loansApi}/return/${loanId}`, { method: 'POST' }); if (response.ok) { alert('تم إرجاع الكتاب بنجاح!'); loadMyLoans(currentMemberId); } else { alert(await response.text()); } }
+
+                document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+                    e.preventDefault(); const oldPass = document.getElementById('oldPassword').value; const newPass = document.getElementById('newPassword').value;
+                    const response = await fetch(`${membersApi}/change-password/${currentMemberId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ oldPassword: oldPass, newPassword: newPass }) });
+                    if (response.ok) { alert('تم تغيير كلمة المرور بنجاح!'); document.getElementById('changePasswordForm').reset(); } else { alert(await response.text()); }
+                });
+
+                async function loadMemberChat() {
+                    const response = await fetch(`${messagesApi}/member/replies/${currentMemberId}`);
+                    const messages = await response.json();
+                    const chatBox = document.getElementById('chatBoxMember'); chatBox.innerHTML = '';
+                    messages.forEach(m => { const bubbleClass = m.isFromAdmin ? 'msg-admin' : 'msg-member'; chatBox.innerHTML += `<div class="w-100"><div class="msg-bubble ${bubbleClass}">${m.content}</div></div>`; });
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }
+
+                document.getElementById('sendMessageForm').addEventListener('submit', async (e) => {
+                    e.preventDefault(); const content = document.getElementById('messageContent').value;
+                    await fetch(`${messagesApi}/send`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ senderId: currentMemberId, senderName: currentUserName, content: content }) });
+                    document.getElementById('messageContent').value = ''; loadMemberChat();
+                });
+
+                function logout() { localStorage.removeItem('currentUser'); window.location.href = '/index.html'; }
+    </script>
+</body>
+</html>

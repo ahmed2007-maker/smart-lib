@@ -1,0 +1,477 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم المدير | SmartLib</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* الخلفية الجديدة والمريحة للعين (مكتبة عصرية) */
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-image: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #f8fafc;
+            min-height: 100vh;
+        }
+
+        /* القائمة الجانبية (شفافة عشان الخلفية تبان) */
+        .sidebar {
+            min-height: 100vh;
+            background: rgba(22, 27, 34, 0.85);
+            backdrop-filter: blur(10px);
+            border-left: 1px solid rgba(255,255,255,0.1);
+            padding-top: 30px;
+        }
+
+            .sidebar h3 {
+                color: #e94560;
+                font-weight: 800;
+                text-align: center;
+                margin-bottom: 30px;
+            }
+
+            .sidebar a {
+                color: #94a3b8;
+                text-decoration: none;
+                display: flex;
+                align-items: center;
+                padding: 15px 25px;
+                transition: 0.3s;
+                font-weight: 600;
+                margin-bottom: 5px;
+            }
+
+                .sidebar a:hover, .sidebar a.active {
+                    background: rgba(233, 69, 96, 0.1);
+                    color: #e94560;
+                    border-right: 4px solid #e94560;
+                }
+
+                .sidebar a i {
+                    margin-left: 15px;
+                    width: 20px;
+                    text-align: center;
+                }
+
+        .content {
+            padding: 40px;
+        }
+
+        .page-title {
+            font-weight: 800;
+            margin-bottom: 30px;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* كروت الإحصائيات */
+        .stat-card {
+            border: none;
+            border-radius: 20px;
+            padding: 30px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s;
+        }
+
+            .stat-card:hover {
+                transform: translateY(-5px);
+            }
+
+            .stat-card h2 {
+                font-size: 40px;
+                font-weight: 800;
+                margin-bottom: 5px;
+            }
+
+            .stat-card p {
+                font-size: 16px;
+                opacity: 0.9;
+                margin: 0;
+            }
+
+            .stat-card .icon {
+                position: absolute;
+                left: 20px;
+                bottom: 20px;
+                font-size: 60px;
+                opacity: 0.2;
+            }
+
+        .bg-gradient-blue {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+        }
+
+        .bg-gradient-green {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .bg-gradient-yellow {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        /* الجداول */
+        .table-container {
+            background: rgba(22, 27, 34, 0.95);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .table {
+            --bs-table-bg: transparent !important;
+            --bs-table-color: #f8fafc !important;
+            margin-bottom: 0;
+        }
+
+            .table thead th {
+                background-color: rgba(13, 17, 23, 0.9) !important;
+                color: #94a3b8 !important;
+                border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+                padding: 15px;
+            }
+
+            .table tbody td {
+                color: #f8fafc !important;
+                border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+                padding: 15px;
+            }
+
+            .table tbody tr:hover td {
+                background-color: rgba(255,255,255,0.05) !important;
+                color: #fff !important;
+            }
+
+        /* الشات */
+        .chat-container {
+            display: flex;
+            height: 600px;
+            background: rgba(22, 27, 34, 0.95);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .inbox-list {
+            width: 30%;
+            border-left: 1px solid rgba(255,255,255,0.1);
+            overflow-y: auto;
+            background: rgba(13, 17, 23, 0.9);
+        }
+
+        .inbox-header {
+            padding: 20px;
+            background: #e94560;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .inbox-item {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: 0.2s;
+            color: #94a3b8;
+        }
+
+            .inbox-item:hover {
+                background-color: rgba(255,255,255,0.05);
+            }
+
+            .inbox-item.active {
+                background-color: rgba(233, 69, 96, 0.1);
+                color: #e94560;
+                border-right: 4px solid #e94560;
+            }
+
+        .chat-window {
+            width: 70%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 20px;
+            background: rgba(13, 17, 23, 0.9);
+            color: white;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .msg-bubble {
+            padding: 12px 18px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            display: inline-block;
+            max-width: 80%;
+        }
+
+        .msg-admin {
+            background: #e94560;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 0;
+        }
+
+        .msg-member {
+            background: #334155;
+            color: white;
+            align-self: flex-start;
+            border-bottom-left-radius: 0;
+        }
+
+        .chat-input-area {
+            padding: 20px;
+            background: rgba(13, 17, 23, 0.9);
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+            .chat-input-area input {
+                border-radius: 50px;
+                background: #1e293b;
+                border: 1px solid rgba(255,255,255,0.1);
+                color: white;
+            }
+
+                .chat-input-area input:focus {
+                    background: #1e293b;
+                    color: white;
+                    box-shadow: none;
+                    border-color: #e94560;
+                }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar">
+                <h3><i class="fas fa-crown me-2"></i>Admin</h3>
+                <a href="#" onclick="loadSection('dashboard', event)" class="active" id="nav-dashboard"><i class="fas fa-chart-pie"></i> الإحصائيات</a>
+                <a href="#" onclick="loadSection('members', event)" id="nav-members"><i class="fas fa-users"></i> الأعضاء</a>
+                <a href="#" onclick="loadSection('books', event)" id="nav-books"><i class="fas fa-book"></i> الكتب</a>
+                <a href="#" onclick="loadSection('loans', event)" id="nav-loans"><i class="fas fa-hand-holding-heart"></i> الاستعارات</a>
+                <a href="#" onclick="loadSection('messages', event)" id="nav-messages"><i class="fas fa-comments"></i> الرسائل</a>
+                <hr style="border-color: rgba(255,255,255,0.1); margin: 20px;">
+                <a href="/index.html"><i class="fas fa-home"></i> العودة للموقع</a>
+            </div>
+
+            <!-- Content -->
+            <div class="col-md-10 content">
+                <div id="dashboard-section">
+                    <h2 class="page-title">مرحباً بك يا مدير 👋</h2>
+                    <div class="row g-4">
+                        <div class="col-md-4"><div class="stat-card bg-gradient-blue"><h2 id="totalMembers">0</h2><p>إجمالي الأعضاء</p><i class="fas fa-users icon"></i></div></div>
+                        <div class="col-md-4"><div class="stat-card bg-gradient-green"><h2 id="totalLoans">0</h2><p>عمليات الاستعارة</p><i class="fas fa-book-reader icon"></i></div></div>
+                        <div class="col-md-4"><div class="stat-card bg-gradient-yellow"><h2 id="totalBooks">0</h2><p>إجمالي الكتب</p><i class="fas fa-book icon"></i></div></div>
+                    </div>
+                </div>
+
+                <div id="members-section" style="display: none;">
+                    <h2 class="page-title">إدارة الأعضاء</h2>
+                    <div class="table-container mb-4">
+                        <h5 class="mb-3 text-white">إضافة عضو جديد</h5>
+                        <form id="addMemberForm" class="row g-3">
+                            <div class="col-md-4"><input type="text" class="form-control bg-dark text-white border-secondary" id="mName" placeholder="اسم العضو" required></div>
+                            <div class="col-md-4"><input type="email" class="form-control bg-dark text-white border-secondary" id="mEmail" placeholder="البريد الإلكتروني" required></div>
+                            <div class="col-md-4"><button type="submit" class="btn btn-success w-100">إضافة</button></div>
+                        </form>
+                    </div>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead><tr><th>الاسم</th><th>الإيميل</th><th>الحالة</th><th>الغرامات</th><th>إجراء</th></tr></thead>
+                            <tbody id="membersTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="books-section" style="display: none;">
+                    <h2 class="page-title">إدارة الكتب</h2>
+                    <div class="table-container mb-4">
+                        <h5 class="mb-3 text-white">إضافة كتاب جديد</h5>
+                        <form id="addBookForm" class="row g-3">
+                            <div class="col-md-3"><input type="text" class="form-control bg-dark text-white border-secondary" id="bTitle" placeholder="عنوان الكتاب" required></div>
+                            <div class="col-md-3"><input type="text" class="form-control bg-dark text-white border-secondary" id="bAuthor" placeholder="المؤلف" required></div>
+                            <div class="col-md-3"><input type="text" class="form-control bg-dark text-white border-secondary" id="bCategory" placeholder="التصنيف" required></div>
+                            <div class="col-md-2"><input type="number" class="form-control bg-dark text-white border-secondary" id="bCopies" placeholder="النسخ" min="1" value="1" required></div>
+                            <div class="col-md-1"><button type="submit" class="btn btn-success w-100">إضافة</button></div>
+                        </form>
+                    </div>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead><tr><th>العنوان</th><th>المؤلف</th><th>التصنيف</th><th>النسخ</th><th>إجراء</th></tr></thead>
+                            <tbody id="booksTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="loans-section" style="display: none;">
+                    <h2 class="page-title">سجل الاستعارات</h2>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead><tr><th>الكتاب</th><th>العضو</th><th>تاريخ الاستعارة</th><th>تاريخ الإرجاع المتوقع</th><th>تاريخ الإرجاع الفعلي</th><th>إجراء</th></tr></thead>
+                            <tbody id="loansTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="messages-section" style="display: none;">
+                    <h2 class="page-title">الرسائل</h2>
+                    <div class="chat-container">
+                        <div class="inbox-list">
+                            <div class="inbox-header">المحادثات</div>
+                            <div id="inboxList"></div>
+                        </div>
+                        <div class="chat-window">
+                            <div class="chat-header" id="chatHeader">اختر محادثة للبدء</div>
+                            <div class="chat-messages" id="chatBoxAdmin"></div>
+                            <div class="chat-input-area" id="replyArea" style="display:none;">
+                                <form id="adminReplyForm" class="d-flex gap-2">
+                                    <input type="text" class="form-control" id="replyContent" placeholder="اكتب ردك..." required>
+                                    <button type="submit" class="btn btn-danger px-4">إرسال</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+                const apiBase = 'https://localhost:7172/api/admin';
+                const booksApi = 'https://localhost:7172/api/books';
+                const messagesApi = 'https://localhost:7172/api/messages';
+                let currentChatMemberId = 0;
+
+                document.addEventListener('DOMContentLoaded', () => {
+                    const user = JSON.parse(localStorage.getItem('currentUser'));
+                    if (!user || user.role !== 'ADMIN') { alert('غير مصرح لك بالدخول هنا'); window.location.href = '/index.html'; return; }
+                    loadSection('dashboard');
+                });
+
+                function loadSection(section, event) {
+                    if(event) event.preventDefault();
+                    document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+                    document.getElementById(`nav-${section}`).classList.add('active');
+                    document.querySelectorAll('.content > div').forEach(div => div.style.display = 'none');
+                    document.getElementById(`${section}-section`).style.display = 'block';
+
+                    if (section === 'dashboard') loadStats();
+                    if (section === 'members') loadMembers();
+                    if (section === 'books') loadBooks();
+                    if (section === 'loans') loadLoans();
+                    if (section === 'messages') loadInbox();
+                }
+
+                async function loadStats() {
+                    const members = await (await fetch(`${apiBase}/members`)).json();
+                    const loans = await (await fetch(`${apiBase}/loans`)).json();
+                    const books = await (await fetch(`${booksApi}?page=1&pageSize=1`)).json();
+                    document.getElementById('totalMembers').innerText = members.length;
+                    document.getElementById('totalLoans').innerText = loans.length;
+                    document.getElementById('totalBooks').innerText = books.total;
+                }
+
+                async function loadMembers() {
+                    const members = await (await fetch(`${apiBase}/members`)).json();
+                    const tbody = document.getElementById('membersTable'); tbody.innerHTML = '';
+                    members.forEach(m => { tbody.innerHTML += `<tr><td>${m.name}</td><td>${m.email}</td><td><span class="badge ${m.membershipStatus === 'ACTIVE' ? 'bg-success' : 'bg-danger'}">${m.membershipStatus}</span></td><td>${m.outstandingFees} ج.م</td><td><button class="btn btn-sm btn-danger" onclick="deleteMember(${m.id})">حذف</button></td></tr>`; });
+                }
+
+                document.getElementById('addMemberForm').addEventListener('submit', async (e) => { e.preventDefault(); const newMember = { name: document.getElementById('mName').value, email: document.getElementById('mEmail').value }; await fetch(`${apiBase}/members`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(newMember) }); document.getElementById('addMemberForm').reset(); loadMembers(); });
+                async function deleteMember(id) { if(confirm('هل أنت متأكد من حذف العضو؟')) { await fetch(`${apiBase}/members/${id}`, { method: 'DELETE' }); loadMembers(); } }
+
+                async function loadBooks() {
+                    const result = await (await fetch(`${booksApi}?page=1&pageSize=50`)).json();
+                    const tbody = document.getElementById('booksTable'); tbody.innerHTML = '';
+                    result.data.forEach(b => { tbody.innerHTML += `<tr><td>${b.title}</td><td>${b.author}</td><td>${b.category}</td><td>${b.copiesAvailable}</td><td><button class="btn btn-sm btn-danger" onclick="deleteBook('${b.isbn}')">حذف</button></td></tr>`; });
+                }
+
+                document.getElementById('addBookForm').addEventListener('submit', async (e) => { e.preventDefault(); const newBook = { title: document.getElementById('bTitle').value, author: document.getElementById('bAuthor').value, category: document.getElementById('bCategory').value, copiesAvailable: parseInt(document.getElementById('bCopies').value) }; await fetch(`${apiBase}/books`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(newBook) }); document.getElementById('addBookForm').reset(); loadBooks(); });
+                async function deleteBook(isbn) { if(confirm('هل أنت متأكد من حذف الكتاب؟')) { await fetch(`${apiBase}/books/${isbn}`, { method: 'DELETE' }); loadBooks(); } }
+
+                async function loadLoans() {
+                    const loans = await (await fetch(`${apiBase}/loans`)).json();
+                    const tbody = document.getElementById('loansTable'); tbody.innerHTML = '';
+                    loans.forEach(l => {
+                        const issueDate = new Date(l.issueDate).toLocaleDateString('ar-EG'); const dueDate = new Date(l.dueDate).toLocaleDateString('ar-EG'); const returnDate = l.returnDate ? new Date(l.returnDate).toLocaleDateString('ar-EG') : '<span class="text-danger">لم يُرجع</span>';
+                        const actionBtn = l.returnDate ? '<span class="badge bg-success">تم الإرجاع</span>' : `<button class="btn btn-sm btn-primary" onclick="returnBook(${l.id})">تسجيل إرجاع</button>`;
+                        tbody.innerHTML += `<tr><td>${l.bookTitle}</td><td>${l.memberName}</td><td>${issueDate}</td><td>${dueDate}</td><td>${returnDate}</td><td>${actionBtn}</td></tr>`;
+                    });
+                }
+                async function returnBook(loanId) { if(confirm('تأكيد إرجاع الكتاب؟')) { await fetch(`${apiBase}/loans/${loanId}/return`, { method: 'POST' }); loadLoans(); } }
+
+                async function loadInbox() {
+                    const inbox = await (await fetch(`${messagesApi}/admin/inbox`)).json();
+                    const container = document.getElementById('inboxList');
+                    container.innerHTML = '';
+                    if(inbox.length === 0) { container.innerHTML = '<p class="text-muted p-3 text-center">لا توجد رسائل</p>'; return; }
+                    inbox.forEach(item => {
+                        const unreadBadge = item.unreadCount > 0 ? `<span class="badge bg-danger float-start">${item.unreadCount}</span>` : '';
+                        container.innerHTML += `
+                            <div class="inbox-item" id="inbox-${item.senderId}" onclick="openChat(${item.senderId}, '${item.senderName}')">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <strong><i class="fas fa-user-circle me-1"></i> ${item.senderName}</strong>
+                                    ${unreadBadge}
+                                </div>
+                                <p class="mb-0 text-light small text-truncate mt-1">${item.lastMessage}</p>
+                                <small class="text-muted" style="font-size:10px;">${new Date(item.lastTime).toLocaleTimeString('ar-EG')}</small>
+                            </div>
+                        `;
+                    });
+                }
+
+                async function openChat(memberId, memberName) {
+                    currentChatMemberId = memberId;
+                    document.getElementById('chatHeader').innerHTML = `<i class="fas fa-user-circle me-2"></i> ${memberName}`;
+                    document.getElementById('replyArea').style.display = 'block';
+
+                    document.querySelectorAll('.inbox-item').forEach(i => i.classList.remove('active'));
+                    document.getElementById('inbox-' + memberId).classList.add('active');
+
+                    const badge = document.querySelector(`#inbox-${memberId} .badge`);
+                    if(badge) badge.remove();
+
+                    const messages = await (await fetch(`${messagesApi}/admin/chat/${memberId}`)).json();
+                    const chatBox = document.getElementById('chatBoxAdmin'); chatBox.innerHTML = '';
+                    messages.forEach(m => {
+                        const bubbleClass = m.isFromAdmin ? 'msg-admin' : 'msg-member';
+                        chatBox.innerHTML += `<div class="w-100"><div class="msg-bubble ${bubbleClass}">${m.content}</div></div>`;
+                    });
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }
+
+                document.getElementById('adminReplyForm').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const content = document.getElementById('replyContent').value;
+                    await fetch(`${messagesApi}/admin/reply`, {
+                        method: 'POST', headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ senderId: currentChatMemberId, senderName: 'الإدارة', content: content, isFromAdmin: true })
+                    });
+                    document.getElementById('replyContent').value = '';
+                    openChat(currentChatMemberId, document.getElementById('chatHeader').innerText.replace('الإدارة ', '').trim());
+                });
+    </script>
+</body>
+</html>
